@@ -1,6 +1,6 @@
 {
   "name": "grel",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "NodeJS module that automates the creation of Git Releases and uploading attachments",
   "main": "grel.js",
   "files": [
