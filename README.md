@@ -21,7 +21,7 @@ var grel = new Grel({
 ### Create a new release
 
 ```js
-grel.create(release_name, release_message, files, function(error, release) {
+grel.create('1.0.0', 'Release 1.0.0', ['/path/to/file'], function(error, release) {
 	if (error) {
 		console.log('Something went wrong', error);
 		return;
@@ -30,13 +30,12 @@ grel.create(release_name, release_message, files, function(error, release) {
 	console.log('Release', release.tag_name, 'created');
 });
 ```
-
-`files` is an array of file paths
+* Note that you can send an empty file array if you have no file attachments
 
 ### Find an existing release
 
 ```js
-grel.find(release_name, function(error, release) {
+grel.find('1.0.0', function(error, release) {
 	if (error) {
 		console.log('Something went wrong', error);
 		return;
@@ -49,7 +48,7 @@ grel.find(release_name, function(error, release) {
 ### Attach files to an existing release
 
 ```js
-grel.attach(release, files, function(err, msg) {
+grel.attach(release, ['/path/to/file1', '/path/to/file2'], function(err, msg) {
     if (err) {
 		console.log('Could not attach file', err);
 		return;
@@ -58,5 +57,6 @@ grel.attach(release, files, function(err, msg) {
 	console.log('Files attached');
 });
 ```
+* Note that you can send an empty file array if you have no file attachments
 
-`files` is an array of file paths
+`release` is an object returned by `grel.create` or `grel.find`
