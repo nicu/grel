@@ -7,7 +7,8 @@ var https = require('https'),
     url_parser = require('url'),
 
     // Constants
-    GIT_RELEASES_URL = 'https://api.github.com/repos/{owner}/{repo}/releases';
+    RELEASES_URL = 'https://api.github.com/repos/{owner}/{repo}/releases',
+    RELEASE_URL = 'https://api.github.com/repos/{owner}/{repo}/releases/{id}';
 
 /**
  * Basic method that copies all the keys and values from the specified object
@@ -128,7 +129,8 @@ GrelRequest.prototype.send = function(method, url, callback) {
  */
 
 function handleResponse(res, data, callback) {
-    var json = JSON.parse(data);
+    // HTTP 204 doesn't have a response
+    var json = data && JSON.parse(data) || {};
 
     if ((res.statusCode >= 200) && (res.statusCode <= 206)) {
         // Handle a few known responses
@@ -178,7 +180,10 @@ Grel.prototype.create = function(name, message, files, callback) {
             "prerelease": false
         }),
         req = new GrelRequest(this),
-        url = strformat(GIT_RELEASES_URL, this),
+        url = strformat(RELEASES_URL, {
+            "owner": this.owner,
+            "repo": this.repo
+        }),
         release;
 
     req.data(data);
@@ -204,16 +209,16 @@ Grel.prototype.attach = function(release, files, callback) {
         bytes, filename,
         i, l = files.length,
         content_types = {
-        	'zip': 'application/zip',
-        	'default': 'text/html'
+            'zip': 'application/zip',
+            'default': 'text/html'
         },
         // very rudimentary implementation of what we usually handle with promises
         in_progress = files.length,
         uploadComplete = function(error, response) {
-        	if (error) {
-        		callback && callback.call(self, error);
-        		return;
-        	}
+            if (error) {
+                callback && callback.call(self, error);
+                return;
+            }
 
             // if all the files were attached, execute the callback
             if (--in_progress === 0) {
@@ -223,8 +228,8 @@ Grel.prototype.attach = function(release, files, callback) {
 
     // if there are no files to attach, execute the callback
     if (!files.length) {
-    	callback && callback.call(self, null, release);
-    	return;
+        callback && callback.call(self, null, release);
+        return;
     }
 
     files.forEach(function(filename) {
@@ -248,31 +253,40 @@ Grel.prototype.attach = function(release, files, callback) {
     });
 };
 
-Grel.prototype.find = function(tag, callback) {
-	var self = this,
-	    req = new GrelRequest(this),
-	    url = strformat(GIT_RELEASES_URL, this),
-	    i, l, release;
+/**
+ * Find a release by name
+ * @param  {String}   name     Release name
+ * @param  {Function} callback Callback function
+ * @return {null} No return value
+ */
+Grel.prototype.find = function(name, callback) {
+    var self = this,
+        req = new GrelRequest(this),
+        url = strformat(RELEASES_URL, {
+            "owner": this.owner,
+            "repo": this.repo
+        }),
+        i, l, release;
 
-	req.send('GET', url, function(error, json) {
-		if (error) {
-			callback && callback.call(self, error);
-			return;
-		}
+    req.send('GET', url, function(error, json) {
+        if (error) {
+            callback && callback.call(self, error);
+            return;
+        }
 
-	    for (i = 0, l = json.length; i < l; ++i) {
-	    	release = json[i];
-	    	if (release.tag_name === tag) {
-	    	    callback && callback.call(self, null, release);
-	    	    return;
-	    	}
-	    };
+        for (i = 0, l = json.length; i < l; ++i) {
+            release = json[i];
+            if (release.tag_name === name) {
+                callback && callback.call(self, null, release);
+                return;
+            }
+        };
 
-	    // if we got here, we didn't find the release we're after
-	    callback && callback.call(self, {
-	        'message': 'Not found'
-	    });
-	});
+        // if we got here, we didn't find the release we're after
+        callback && callback.call(self, {
+            'message': 'Not found'
+        });
+    });
 };
 
 /**
@@ -282,7 +296,22 @@ Grel.prototype.find = function(tag, callback) {
  * @return {null} No return value
  */
 Grel.prototype.remove = function(release, callback) {
+    var self = this,
+        req = new GrelRequest(this),
+        url = strformat(RELEASE_URL, {
+            "owner": this.owner,
+            "repo": this.repo,
+            "id": release.id
+        });
 
+    req.send('DELETE', url, function(error, json) {
+        if (error) {
+            callback && callback.call(self, error);
+            return;
+        }
+
+        callback && callback.call(self, null, json);
+    });
 };
 
 /**
