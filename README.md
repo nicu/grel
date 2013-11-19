@@ -10,7 +10,10 @@ Examples
 ### Initialise
 
 ```js
-var grel = new Grel({
+var Grel = require('grel'),
+	grel;
+
+grel = new Grel({
     user: user,
 	password: pass,
 	owner: owner,
