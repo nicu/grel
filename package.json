@@ -1,8 +1,13 @@
 {
   "name": "grel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NodeJS module that automates the creation of Git Releases and uploading attachments",
   "main": "grel.js",
+  "files": [
+    "grel.js",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
