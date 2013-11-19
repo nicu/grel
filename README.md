@@ -1,7 +1,7 @@
 Grel
 ====
 
-NodeJS module that automates the creation of Git Releases and uploading attachments.
+NodeJS module that automates the creation of Git Releases and uploading attachments using GitHub's [Releases API](http://developer.github.com/v3/repos/releases).
 
 
 Examples
@@ -11,7 +11,7 @@ Examples
 
 ```js
 var Grel = require('grel'),
-	grel;
+    grel;
 
 grel = new Grel({
     user: user,
