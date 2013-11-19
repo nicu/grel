@@ -1,0 +1,24 @@
+{
+  "name": "grel",
+  "version": "0.1.0",
+  "description": "NodeJS module that automates the creation of Git Releases and uploading attachments",
+  "main": "grel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nicu/grel.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "releaase",
+    "api"
+  ],
+  "author": "Nicu Ciocan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nicu/grel/issues"
+  }
+}
