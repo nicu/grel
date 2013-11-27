@@ -54,8 +54,7 @@ function GrelRequest(grel) {
     this.headers = {
         'Authorization': 'Basic ' + new Buffer(grel.user + ':' + grel.password).toString('base64'),
         'Accept': 'application/vnd.github.manifold-preview',
-        // this can be overwritten by using: grel.header('User-Agent', 'Awesome-App');
-        'User-Agent': 'Grel-App'
+        'User-Agent': 'Grel'
     };
 
     this.grel = grel;
