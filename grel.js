@@ -53,7 +53,9 @@ function strformat(string, dict) {
 function GrelRequest(grel) {
     this.headers = {
         'Authorization': 'Basic ' + new Buffer(grel.user + ':' + grel.password).toString('base64'),
-        'Accept': 'application/vnd.github.manifold-preview'
+        'Accept': 'application/vnd.github.manifold-preview',
+        // this can be overwritten by using: grel.header('User-Agent', 'Awesome-App');
+        'User-Agent': 'Grel-App'
     };
 
     this.grel = grel;
