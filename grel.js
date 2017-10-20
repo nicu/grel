@@ -51,8 +51,16 @@ function strformat(string, dict) {
  */
 
 function GrelRequest(grel) {
+    var authString;
+    
+    if (grel.token) {
+        authString = grel.token + ':';
+    } else {
+        authString = grel.user + ':' + grel.password;
+    }
+    
     this.headers = {
-        'Authorization': 'Basic ' + new Buffer(grel.user + ':' + grel.password).toString('base64'),
+        'Authorization': 'Basic ' + new Buffer(authString).toString('base64'),
         'Accept': 'application/vnd.github.manifold-preview',
         'User-Agent': 'Grel'
     };
